@@ -17,10 +17,10 @@ def cache_dir():
         os.makedirs(work_dir)
     return work_dir
 
-def get(url, enc='utf-8', cache=True):
-    if cache:
-        md5 = hashlib.md5(url).hexdigest()
-        f = "%s/%s" % (cache_dir(), md5)
+def get(url, enc='utf-8', cache=True, force=False):
+    md5 = hashlib.md5(url).hexdigest()
+    f = "%s/%s" % (cache_dir(), md5)
+    if cache and not force:
         if os.path.isfile(f):
             return open(f).read().decode(enc, 'ignore')
     req = urllib2.Request(url)
@@ -59,9 +59,9 @@ def crawl_plan_list():
             'http://politics.people.com.cn/n/2015/1103/c1001-27772701-2.html', #十三五
             ]
 
-def build_model(cache=True):
-    if cache:
-        f = "%s/cn_word2vec.model" % cache_dir()
+def build_model(cache=True, force=False):
+    f = "%s/cn_word2vec.model" % cache_dir()
+    if cache and not force:
         if os.path.isfile(f):
             return Word2Vec.load(f)
     texts = []
